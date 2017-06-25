@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.bean.TournamentInfoTennis" table="tbl_tournament_info_tennis">
+		<id name="vid">
+			<generator class="native"></generator>
+		</id>
+		<property name="tournamentName"></property>
+		<property name="tournamentDate"></property>
+		<property name="city"></property>
+		<property name="location"></property>
+		<property name="matchType"></property>
+		<property name="competitionSystemGame"></property>
+		<property name="competitionSystemCouncil"></property>
+		<property name="competitionSystemSmall"></property>
+		<property name="home_1_name"></property>
+		<property name="home_2_name"></property>
+		<property name="away_1_name"></property>
+		<property name="away_2_name"></property>
+		<property name="newestSmallA"></property>
+		<property name="newestSmallB"></property>
+		<property name="winner"></property>
+		<property name="withdraw"></property>
+		<property name="judgeName"></property>
+		<property name="narrateMain"></property>
+		<property name="cameoNarrate1"></property>
+		<property name="cameoNarrate2"></property>
+		<property name="cameoNarrate3"></property>
+		<property name="liveBroadcastPlatform"></property>
+		<property name="isLiveBroadcast"></property>
+		<property name="createTime"></property>
+		<property name="startTime"></property>
+		<property name="endTime"></property>
+		<property name="home_1_id"></property>
+		<property name="home_2_id"></property>
+		<property name="away_1_id"></property>
+		<property name="away_2_id"></property>
+		<property name="status"></property>
+		<property name="newestCouncilA"></property>
+		<property name="newestCouncilB"></property>
+		<property name="newestSetA"></property>
+		<property name="newestSetB"></property>
+		<property name="nextServe"></property>
+		<property name="isOne"></property>
+		<property name="liveBroadcastMaxuser"></property>
+		<property name="bulletScreen"></property>
+		<property name="createUserId"></property>
+		<property name="pointType"></property>
+		<property name="firstServe"></property>
+	</class>
+</hibernate-mapping>
+	

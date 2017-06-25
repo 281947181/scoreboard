@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.bean.MatchPathTennis" table="tbl_match_path_tennis">
+		<id name="vid">
+			<generator class="native"></generator>
+		</id>
+		<property name="tournamentVid"></property>
+		<property name="serveSide"></property>
+		<property name="scoreSide"></property>
+		<property name="pathType"></property>
+		<property name="createTime"></property>
+		<property name="oldSetA"></property>
+		<property name="oldSetB"></property>
+		<property name="oldCouncilA"></property>
+		<property name="oldCouncilB"></property>
+		<property name="oldSmallA"></property>
+		<property name="oldSmallB"></property>
+		<property name="newSetA"></property>
+		<property name="newSetB"></property>
+		<property name="newCouncilA"></property>
+		<property name="newCouncilB"></property>
+		<property name="newSmallA"></property>
+		<property name="newSmallB"></property>
+		<property name="isOne"></property>
+		<property name="nextServe"></property>
+		<property name="pointType"></property>
+	</class>
+</hibernate-mapping>
+	

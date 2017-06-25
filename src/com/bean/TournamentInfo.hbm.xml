@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.bean.TournamentInfo" table="tbl_tournament_info">
+		<id name="id">
+			<generator class="native"></generator>
+		</id>
+		<property name="court_no"></property>
+		<property name="addr"></property>
+		<property name="tournament_name"></property>
+		<property name="home_1_name"></property>
+		<property name="home_2_name"></property>
+		<property name="away_1_name"></property>
+		<property name="away_2_name"></property>
+		<property name="winner"></property>
+		<property name="withdraw"></property>
+		<property name="judge_name"></property>
+		<property name="competition_system_game"></property>
+		<property name="competition_system_council"></property>
+		<property name="competition_system_small"></property>
+		<property name="narrate_main"></property>
+		<property name="cameo_narrate_1"></property>
+		<property name="cameo_narrate_2"></property>
+		<property name="cameo_narrate_3"></property>
+		<property name="live_broadcast_platform"></property>
+		<property name="city"></property>
+		<property name="create_time"></property>
+		<property name="tournament_date"></property>
+		<property name="start_time"></property>
+		<property name="end_time"></property>
+		<property name="home_1_id"></property>
+		<property name="home_2_id"></property>
+		<property name="away_1_id"></property>
+		<property name="away_2_id"></property>
+		<property name="authorization_user_id"></property>
+		<property name="create_user_id"></property>
+		<property name="match_type"></property>
+		<property name="match_round"></property>
+		<property name="set_score_a"></property>
+		<property name="set_score_b"></property>
+		<property name="council_1_a"></property>
+		<property name="council_2_a"></property>
+		<property name="council_3_a"></property>
+		<property name="council_4_a"></property>
+		<property name="council_5_a"></property>
+		<property name="seven_points_1"></property>
+		<property name="seven_points_2"></property>
+		<property name="seven_points_3"></property>
+		<property name="seven_points_4"></property>
+		<property name="seven_points_5"></property>
+		<property name="had_judge"></property>
+		<property name="is_live_broadcast"></property>
+		<property name="live_broadcast_maxuser"></property>
+		<property name="bullet_screen"></property>
+		<property name="council_1_b"></property>
+		<property name="council_2_b"></property>
+		<property name="council_3_b"></property>
+		<property name="council_4_b"></property>
+		<property name="council_5_b"></property>
+		<property name="status"></property>
+		<property name="newest_council_a"></property>
+		<property name="newest_council_b"></property>
+		<property name="newest_small_a"></property>
+		<property name="newest_small_b"></property>
+		<property name="newest_set_a"></property>
+		<property name="newest_set_b"></property>
+		<property name="is_change_court"></property>
+		<property name="next_serve"></property>
+		<!-- <property name="court_no" column="court_no" type="string"></property>
+		<property name="addr" column="addr" type="string"></property>
+		<property name="tournament_name" column="tournament_name" type="string"></property>
+		<property name="home_1_name" column="home_1_name" type="string"></property>
+		<property name="home_2_name" column="home_2_name" type="string"></property>
+		<property name="away_1_name" column="away_1_name" type="string"></property>
+		<property name="away_2_name" column="away_2_name" type="string"></property>
+		<property name="winner" column="winner" type="string"></property>
+		<property name="withdraw" column="withdraw" type="string"></property>
+		<property name="judge_name" column="judge_name" type="string"></property>
+		<property name="competition_system_game" column="competition_system_game" type="string"></property>
+		<property name="competition_system_council" column="competition_system_council" type="string"></property>
+		<property name="competition_system_small" column="competition_system_small" type="string"></property>
+		<property name="narrate_main" column="narrate_main" type="string"></property>
+		<property name="cameo_narrate_1" column="cameo_narrate_1" type="string"></property>
+		<property name="cameo_narrate_2" column="cameo_narrate_2" type="string"></property>
+		<property name="cameo_narrate_3" column="cameo_narrate_3" type="string"></property>
+		<property name="live_broadcast_platform" column="live_broadcast_platform" type="string"></property>
+		<property name="city" column="city" type="string"></property>
+		<property name="create_time" column="create_time" type="java.math.BigInteger"></property>
+		<property name="tournament_date" column="tournament_date" type="java.math.BigInteger"></property>
+		<property name="start_time" column="start_time" type="java.math.BigInteger"></property>
+		<property name="end_time" column="end_time" type="java.math.BigInteger"></property>
+		<property name="home_1_id" column="home_1_id" type="java.math.BigInteger"></property>
+		<property name="home_2_id" column="home_2_id" type="java.math.BigInteger"></property>
+		<property name="away_1_id" column="away_1_id" type="java.math.BigInteger"></property>
+		<property name="away_2_id" column="away_2_id" type="java.math.BigInteger"></property>
+		<property name="authorization_user_id" column="authorization_user_id" type="java.math.BigInteger"></property>
+		<property name="create_user_id" column="create_user_id" type="java.math.BigInteger"></property>
+		<property name="match_type" column="match_type" type="java.lang.Integer"></property>
+		<property name="match_round" column="match_round" type="java.lang.Integer"></property>
+		<property name="set_score_a" column="set_score_a" type="java.lang.Integer"></property>
+		<property name="set_score_b" column="set_score_b" type="java.lang.Integer"></property>
+		<property name="council_1_a" column="council_1_a" type="java.lang.Integer"></property>
+		<property name="council_2_a" column="council_2_a" type="java.lang.Integer"></property>
+		<property name="council_3_a" column="council_3_a" type="java.lang.Integer"></property>
+		<property name="council_4_a" column="council_4_a" type="java.lang.Integer"></property>
+		<property name="council_5_a" column="council_5_a" type="java.lang.Integer"></property>
+		<property name="seven_points_1" column="seven_points_1" type="java.lang.Integer"></property>
+		<property name="seven_points_2" column="seven_points_2" type="java.lang.Integer"></property>
+		<property name="seven_points_3" column="seven_points_3" type="java.lang.Integer"></property>
+		<property name="seven_points_4" column="seven_points_4" type="java.lang.Integer"></property>
+		<property name="seven_points_5" column="seven_points_5" type="java.lang.Integer"></property>
+		<property name="had_judge" column="had_judge" type="java.lang.Integer"></property>
+		<property name="is_live_broadcast" column="is_live_broadcast" type="java.lang.Integer"></property>
+		<property name="live_broadcast_maxuser" column="live_broadcast_maxuser" type="java.lang.Integer"></property>
+		<property name="bullet_screen" column="bullet_screen" type="java.lang.Integer"></property>
+		<property name="council_1_b" column="council_1_b" type="java.lang.Integer"></property>
+		<property name="council_2_b" column="council_2_b" type="java.lang.Integer"></property>
+		<property name="council_3_b" column="council_3_b" type="java.lang.Integer"></property>
+		<property name="council_4_b" column="council_4_b" type="java.lang.Integer"></property>
+		<property name="council_5_b" column="council_5_b" type="java.lang.Integer"></property>
+		<property name="ststus" column="ststus" type="java.lang.Integer"></property>
+		<property name="newest_council_a" column="newest_council_a" type="java.lang.Integer"></property>
+		<property name="newest_council_b" column="newest_council_b" type="java.lang.Integer"></property>
+		<property name="newest_small_a" column="newest_small_a" type="java.lang.Integer"></property>
+		<property name="newest_small_b" column="newest_small_b" type="java.lang.Integer"></property>
+		<property name="newest_set_a" column="newest_set_a" type="java.lang.Integer"></property>
+		<property name="newest_set_b" column="newest_set_b" type="java.lang.Integer"></property>
+		<property name="is_change_court" column="is_change_court" type="java.lang.Integer"></property> -->
+	</class>
+</hibernate-mapping>
+	

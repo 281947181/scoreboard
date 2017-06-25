@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+	    <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+	    <property name="jdbcUrl" value="jdbc:mysql://rm-uf64az4pk458ybhq0o.mysql.rds.aliyuncs.com:3306/tennis-score"/>
+	    <property name="user" value="adminn"/>
+	    <property name="password" value="huangyl09"/>
+	    <property name="maxPoolSize" value="40"></property>
+		<property name="minPoolSize" value="1"></property>
+		<property name="initialPoolSize" value="1"></property>
+		<property name="maxIdleTime" value="200"></property>
+	</bean>
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<!----><prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.jdbc.fatch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_size">25</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<!--<prop key="hibernate.current_session_context_class">thread</prop>-->
+			</props>
+		</property>
+		<property name="mappingLocations" value="classpath:/com/bean/*.hbm.xml"></property>
+	</bean>
+	
+	
+ 	<bean id="BaseDao" class="com.dao.impl.BaseDaoImpl" scope="singleton">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"/>
+		</property>
+	</bean>
+	
+	<bean id="QueryScoreService" class="com.service.impl.QueryScoreServiceImpl" scope="singleton">
+		<property name="baseDao" ref="BaseDao"></property>
+	</bean>
+	<bean id="QueryScoreAction" class="com.action.QueryScoreAction" scope="prototype">
+		<property name="queryScoreService" ref="QueryScoreService"></property>
+	</bean>
+	
+	<bean id="StatisticsService" class="com.service.impl.StatisticsServiceImpl" scope="singleton">
+		<property name="baseDao" ref="BaseDao"></property>
+	</bean>
+	<bean id="StatisticsAction" class="com.action.StatisticsAction" scope="prototype">
+		<property name="statisticsService" ref="StatisticsService"></property>
+	</bean>
+	
+	<bean id="ScoreControlService" class="com.service.impl.ScoreControlServiceImpl" scope="singleton">
+		<property name="baseDao" ref="BaseDao"></property>
+	</bean>
+	<bean id="ScoreControlAction" class="com.action.ScoreControlAction" scope="prototype">
+		<property name="scoreControlService" ref="ScoreControlService"></property>
+	</bean>
+	
+	<bean id="WoLaiSaiService" class="com.service.impl.WoLaiSaiServiceImpl" scope="singleton">
+		<property name="baseDao" ref="BaseDao"></property>
+	</bean>
+	<bean id="WoLaiSaiAction" class="com.action.WoLaiSaiAction" scope="prototype">
+		<property name="woLaiSaiService" ref="WoLaiSaiService"></property>
+	</bean>
+	
+	<bean id="TestAction" class="com.action.TestAction" scope="prototype">
+	</bean>
+	
+</beans>

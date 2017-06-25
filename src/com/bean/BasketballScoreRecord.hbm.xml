@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.bean.BasketballScoreRecord" table="tbl_basketball_score_record">
+		<id name="vid">
+			<generator class="native"></generator>
+		</id>
+		<property name="matchId"></property>
+		<property name="scoreSide"></property>
+		<property name="scoreIncreased"></property>
+		<property name="oldScoreA"></property>
+		<property name="oldScoreB"></property>
+		<property name="newScoreA"></property>
+		<property name="newScoreB"></property>
+		<property name="setNum"></property>
+		<property name="minute"></property>
+		<property name="second"></property>
+		<property name="sideTime"></property>
+		<property name="createTime"></property>
+	</class>
+</hibernate-mapping>
+	

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.bean.MatchPath" table="tbl_match_path">
+		<id name="id">
+			<generator class="native"></generator>
+		</id>
+		<property name="winner"></property>
+		<property name="tournament_id"></property>
+		<property name="create_time"></property>
+		<property name="serve_player_id"></property>
+		<property name="receiver_id"></property>
+		<property name="score_set_a"></property>
+		<property name="score_set_b"></property>
+		<property name="score_council_a"></property>
+		<property name="score_council_b"></property>
+		<property name="score_small_a"></property>
+		<property name="score_small_b"></property>
+		<property name="bounce_num"></property>
+		<property name="path_type"></property>
+		<property name="side_change"></property>
+		<property name="is_one"></property>
+		<property name="is_seven"></property>
+	</class>
+</hibernate-mapping>
+	
