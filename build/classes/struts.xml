@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	
+    <constant name="struts.enable.DynamicMethodInvocation" value="true" />
+    <constant name="struts.devMode" value="false" />
+    <constant name="struts.multipart.maxSize" value="209715200"/>
+
+    <package name="scoreboard" extends="json-default">
+    	<action name="queryScore_*" method="{1}" class="QueryScoreAction">
+    		<result name="tennis" type="dispatcher">/scoreboard_tennis.jsp</result>
+    		<result name="basketball" type="dispatcher">/scoreboard_basketball.jsp</result>
+    		<result name="pingpang" type="dispatcher">/scoreboard_pingpang.jsp</result>
+    		<result name="wrongType" type="dispatcher">/error.jsp</result>
+        </action>
+        <action name="statistics_*" method="{1}" class="StatisticsAction">
+    		<result name="tennis" type="dispatcher">/statistics_tennis.jsp</result>
+    		<result name="basketball" type="dispatcher">/statistics_basketball.jsp</result>
+    		<result name="wrongType" type="dispatcher">/error.jsp</result>
+        </action>
+        <action name="scoreControl_*" method="{1}" class="ScoreControlAction">
+        </action>
+        <action name="woLaiSai_*" method="{1}" class="WoLaiSaiAction">
+        	<result name="success" type="dispatcher">/WEB-INF/wolaisai/tennis_wolaisai.jsp</result>
+        </action>
+        <action name="test_*" method="{1}" class="TestAction">
+        </action>
+    
+    
+        <!-- <global-results>
+            <result name="login">/unlogin.jsp</result>
+        </global-results> -->
+<!--
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception" result="error"/>
+        </global-exception-mappings>
+	-->
+        <!-- <action name="login_*" method="{1}" class="LoginAction">
+        	<result name="backstageLogin">/backstage.jsp</result>
+        </action>
+        <action name="backstage_articalManage_*" method="{1}" class="Backstage_ArticalManageAction">
+        </action>
+        <action name="show_artical_*" method="{1}" class="Show_ArticalAction">
+        </action>
+        <action name="checkRight_*" method="{1}" class="CheckRightAction">
+        </action>
+        <action name="equipmentMag_equipment_*" method="{1}" class="EquipmentMag_EquipmentAction">
+        	<result name="outputSectionRepairDataSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xlsx"</param>
+				<param name="inputName">outputSectionRepairData</param>
+			</result>
+			<result name="outputMonthRepairDataSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xlsx"</param>
+				<param name="inputName">outputMonthRepairData</param>
+			</result>
+			<result name="outputYearRepairDataSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xlsx"</param>
+				<param name="inputName">outputYearRepairData</param>
+			</result>
+			<result name="outputMonthStopTimeReduceSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xlsx"</param>
+				<param name="inputName">outputMonthStopTimeReduce</param>
+			</result>
+			<result name="outputYearStopTimeReduceSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xlsx"</param>
+				<param name="inputName">outputYearStopTimeReduce</param>
+			</result>
+			<result name="outputDetailRepairDataSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xlsx"</param>
+				<param name="inputName">outputDetailRepairData</param>
+			</result>
+        </action>
+        <action name="equipmentMag_sparepart_*" method="{1}" class="EquipmentMag_SparepartAction">
+        	<result name="outputSparepartUseInfoSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xlsx"</param>
+				<param name="inputName">outputSparepartUseInfo</param>
+			</result>
+        </action>
+        <action name="checkInOutMag_additionalInfo_*" method="{1}" class="CheckInOutMag_AdditionalInfoAction">
+        	<result name="outputCheckInOutSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xls"</param>
+				<param name="inputName">outputCheckInOut</param>
+			</result>
+        </action>
+        
+        <action name="checkInOutMag_checkIn_*" method="{1}" class="CheckInOutMag_CheckInAction">
+        </action>
+        <action name="checkInOutMag_overtime_*" method="{1}" class="CheckInOutMag_OvertimeAction">
+        </action>
+        <action name="qualityMag_additionalInfo_*" method="{1}" class="QualityMag_AdditionalInfoAction">
+      	</action>
+      	<action name="qualityMag_manualData_*" method="{1}" class="QualityMag_ManualDataAction">
+      		<result name="outputIxMrDataSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xls"</param>
+				<param name="inputName">outputIxMrData</param>
+			</result>
+			<result name="outputIxMrDataOriginalSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xls"</param>
+				<param name="inputName">outputIxMrDataOriginal</param>
+			</result>
+			<result name="outputQualityDataSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xls"</param>
+				<param name="inputName">outputQualityData</param>
+			</result>
+      	</action>
+      	<action name="worktimeMag_additionalInfo_*" method="{1}" class="WorktimeMag_AdditionalInfoAction">
+      		<result name="outputWorkTimeByWorkGroupSummarySuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xls"</param>
+				<param name="inputName">outputWorkTimeByWorkGroupSummary</param>
+			</result>
+      	</action>
+      	<action name="worktimeMag_inputData_*" method="{1}" class="WorktimeMag_InputDataAction">
+      	</action>
+      	<action name="worktimeMag_checkData_*" method="{1}" class="WorktimeMag_CheckDataAction">
+      	</action>
+      	<action name="checkInOutMag_askForLeave_*" method="{1}" class="CheckInOutMag_AskForLeaveAction">
+        </action>
+        <action name="manufactureMag_FODatabase_*" method="{1}" class="ManufactureMag_FODatabaseAction">
+      		<result name="downloadFOExampleSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xls"</param>
+				<param name="inputName">downloadFOExample</param>
+			</result>
+      	</action>
+      	<action name="manufactureMag_ratedWorktimeDatabase_*" method="{1}" class="ManufactureMag_RatedWorktimeDatabaseAction">
+      		<result name="downloadRatedWorktimeExampleSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xls"</param>
+				<param name="inputName">downloadRatedWorktimeExample</param>
+			</result>
+      	</action>
+      	<action name="manufactureMag_worktimeMag_*" method="{1}" class="ManufactureMag_WorktimeManageAction">
+        </action>
+        <action name="stopWorktimeMag_*" method="{1}" class="StopWorktimeManageAction">
+        	<result name="outputStopWorktimeSuccess" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="contentDisposition">attachment;filename="download.xls"</param>
+				<param name="inputName">outputStopWorktime</param>
+			</result>
+        </action> -->
+        
+	</package>
+</struts>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.bean.TournamentInfoPingpang" table="tbl_tournament_info_pingpang">
+		<id name="vid">
+			<generator class="native"></generator>
+		</id>
+		<property name="createTime"></property>
+		<property name="setNum"></property>
+		<property name="singleSetPoint"></property>
+		<property name="nameA"></property>
+		<property name="nameB"></property>
+		<property name="currentScoreA"></property>
+		<property name="currentScoreB"></property>
+		<property name="currentSetNum"></property>
+		<property name="currentSetA"></property>
+		<property name="currentSetB"></property>
+		<property name="firstServe"></property>
+		<property name="currentServe"></property>
+		<property name="totalServeNum"></property>
+	</class>
+</hibernate-mapping>
+	
