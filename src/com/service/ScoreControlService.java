@@ -16,7 +16,7 @@ public interface ScoreControlService {
 	String doNextSetPingpang(String matchId);
 	String doStartTennisMatch(String matchId, String firstServe);
 	String doCreateTennisMatch(String matchName, String city, String location, String judge, String matchType,
-			String winType, String setType, String gameType, String nameA1, String nameA2, String nameB1, String nameB2, String matchDate);
+			String winType, String setType, String gameType, String nameA1, String nameA2, String nameB1, String nameB2, String matchDate, String lastType);
 	String doGainServeScoreTennis(String matchId, String pathType, String isOne, String scoreSide);
 	String doQueryTennisMatchInfoForInit(String matchId);
 	String doServeFaultTennis(String matchId, String pathType, String isOne);

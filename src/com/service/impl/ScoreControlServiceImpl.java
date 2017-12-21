@@ -378,7 +378,7 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 	@Override
 	public String doCreateTennisMatch(String matchName, String city, String location, String judge, String matchType,
 			String winType, String setType, String gameType, String nameA1, String nameA2, String nameB1,
-			String nameB2, String matchDate) {
+			String nameB2, String matchDate, String lastType) {
 		TournamentInfoTennis tournamentInfoTennis = new TournamentInfoTennis();
 		tournamentInfoTennis.setTournamentName(matchName);
 		tournamentInfoTennis.setTournamentDate(matchDate);
@@ -389,6 +389,7 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 		tournamentInfoTennis.setCompetitionSystemGame(winType);
 		tournamentInfoTennis.setCompetitionSystemCouncil(setType);
 		tournamentInfoTennis.setCompetitionSystemSmall(gameType);
+		tournamentInfoTennis.setCompetitionSystemLast(lastType);
 		tournamentInfoTennis.setHome_1_id(1);
 		tournamentInfoTennis.setAway_1_id(2);
 		tournamentInfoTennis.setHome_1_name(nameA1);
@@ -444,12 +445,24 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 	}
 	private int isOnlySevenOr11Set(TournamentInfoTennis tournamentInfoTennis){
 		String competitionSystemCouncil = tournamentInfoTennis.getCompetitionSystemCouncil();
-		if( "1局抢7".equals(competitionSystemCouncil) )
-			return 7;
-		else if ( "1局抢11".equals(competitionSystemCouncil) ) 
-			return 11;
+		if ( isFinal10Set(tournamentInfoTennis) ) {
+			return 10;
+		}
+		else{
+			if( "1局抢7".equals(competitionSystemCouncil) )
+				return 7;
+			else if ( "1局抢11".equals(competitionSystemCouncil) ) 
+				return 11;
+			else 
+				return 0;
+		}
+	}
+	private boolean isFinal10Set(TournamentInfoTennis tournamentInfoTennis){
+		String competitionSystemLast = tournamentInfoTennis.getCompetitionSystemLast();
+		if( "抢10".equals(competitionSystemLast) && tournamentInfoTennis.getNewestSetA() == 1 && tournamentInfoTennis.getNewestSetA().equals(tournamentInfoTennis.getNewestSetB()) )
+			return true;
 		else 
-			return 0;
+			return false;
 	}
 	private boolean isSevenSet(TournamentInfoTennis tournamentInfoTennis){
 		int newestCouncilA = tournamentInfoTennis.getNewestCouncilA();
@@ -474,14 +487,13 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 		int winSet = Integer.parseInt(tournamentInfoTennis.getCompetitionSystemGame().substring(0,1))/2+1;
 		String competitionSystemSmall = tournamentInfoTennis.getCompetitionSystemSmall();
 		int winCouncil = Integer.parseInt(tournamentInfoTennis.getCompetitionSystemCouncil().substring(0,1));
-		if( isOnlySevenOr11Set(tournamentInfoTennis) > 0 ){
-			//1局抢7或1局抢11
-			int sevenOr11 = isOnlySevenOr11Set(tournamentInfoTennis);
-			//7,11
+		if( isFinal10Set(tournamentInfoTennis) ){
+			int ten = 10;
+			//抢10
 			if ( "A".equals(scoreSide) ) {
 				//A得分
 				scoreA++;
-				if ( competitionSystemSmall.indexOf("有") >= 0 && scoreA >= sevenOr11 && ( scoreA - scoreB >= 2 )  ) {
+				if ( scoreA >= ten && ( scoreA - scoreB >= 2 )  ) {
 					//本发球局结束, A抢7胜, set+1, council清零, small清零, 换发球
 					tournamentInfoTennis.setNewestCouncilA(0);
 					tournamentInfoTennis.setNewestCouncilB(0);
@@ -499,24 +511,24 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 						tournamentInfoTennis.setNextServe(null);
 					}
 				}
-				else if ( competitionSystemSmall.indexOf("无") >= 0 && scoreA == sevenOr11 ) {
-					//本发球局结束, A抢7胜, set+1, council清零, small清零, 换发球
-					tournamentInfoTennis.setNewestCouncilA(0);
-					tournamentInfoTennis.setNewestCouncilB(0);
-					tournamentInfoTennis.setNewestSmallA("0");
-					tournamentInfoTennis.setNewestSmallB("0");
-					setA++;
-					tournamentInfoTennis.setNewestSetA(setA);
-					if ( setA == winSet ) {
-						//A赢过半数, 比赛结束, A获胜
-						tournamentInfoTennis.setStatus("已结束");
-						tournamentInfoTennis.setNextServe(null);
-						tournamentInfoTennis.setEndTime(new Date());
-						tournamentInfoTennis.setWinner("A");
-						tournamentInfoTennis.setWithdraw("B");
-						tournamentInfoTennis.setNextServe(null);
-					}
-				}
+//				else if ( scoreA == ten ) {
+//					//本发球局结束, A抢7胜, set+1, council清零, small清零, 换发球
+//					tournamentInfoTennis.setNewestCouncilA(0);
+//					tournamentInfoTennis.setNewestCouncilB(0);
+//					tournamentInfoTennis.setNewestSmallA("0");
+//					tournamentInfoTennis.setNewestSmallB("0");
+//					setA++;
+//					tournamentInfoTennis.setNewestSetA(setA);
+//					if ( setA == winSet ) {
+//						//A赢过半数, 比赛结束, A获胜
+//						tournamentInfoTennis.setStatus("已结束");
+//						tournamentInfoTennis.setNextServe(null);
+//						tournamentInfoTennis.setEndTime(new Date());
+//						tournamentInfoTennis.setWinner("A");
+//						tournamentInfoTennis.setWithdraw("B");
+//						tournamentInfoTennis.setNextServe(null);
+//					}
+//				}
 				else{
 					tournamentInfoTennis.setNewestSmallA(scoreA+"");
 					if ( scoreA+scoreB == 1 ) 
@@ -531,7 +543,7 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 			else{
 				//B得分
 				scoreB++;
-				if ( competitionSystemSmall.indexOf("有") >= 0 && scoreB >= sevenOr11 && ( scoreB - scoreA >= 2 ) ) {
+				if ( scoreB >= ten && ( scoreB - scoreA >= 2 ) ) {
 					//本发球局结束, B抢7胜, set+1, council清零, small清零
 					tournamentInfoTennis.setNewestCouncilA(0);
 					tournamentInfoTennis.setNewestCouncilB(0);
@@ -549,24 +561,24 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 						tournamentInfoTennis.setNextServe(null);
 					}
 				}
-				else if ( competitionSystemSmall.indexOf("无") >= 0 && scoreB == sevenOr11 ) {
-					//本发球局结束, B抢7胜, set+1, council清零, small清零, 换发球
-					tournamentInfoTennis.setNewestCouncilA(0);
-					tournamentInfoTennis.setNewestCouncilB(0);
-					tournamentInfoTennis.setNewestSmallA("0");
-					tournamentInfoTennis.setNewestSmallB("0");
-					setB++;
-					tournamentInfoTennis.setNewestSetB(setB);
-					if ( setB == winSet ) {
-						//B赢过半数, 比赛结束, A获胜
-						tournamentInfoTennis.setStatus("已结束");
-						tournamentInfoTennis.setNextServe(null);
-						tournamentInfoTennis.setEndTime(new Date());
-						tournamentInfoTennis.setWinner("B");
-						tournamentInfoTennis.setWithdraw("A");
-						tournamentInfoTennis.setNextServe(null);
-					}
-				}
+//				else if ( competitionSystemSmall.indexOf("无") >= 0 && scoreB == ten ) {
+//					//本发球局结束, B抢7胜, set+1, council清零, small清零, 换发球
+//					tournamentInfoTennis.setNewestCouncilA(0);
+//					tournamentInfoTennis.setNewestCouncilB(0);
+//					tournamentInfoTennis.setNewestSmallA("0");
+//					tournamentInfoTennis.setNewestSmallB("0");
+//					setB++;
+//					tournamentInfoTennis.setNewestSetB(setB);
+//					if ( setB == winSet ) {
+//						//B赢过半数, 比赛结束, A获胜
+//						tournamentInfoTennis.setStatus("已结束");
+//						tournamentInfoTennis.setNextServe(null);
+//						tournamentInfoTennis.setEndTime(new Date());
+//						tournamentInfoTennis.setWinner("B");
+//						tournamentInfoTennis.setWithdraw("A");
+//						tournamentInfoTennis.setNextServe(null);
+//					}
+//				}
 				else{
 					tournamentInfoTennis.setNewestSmallB(scoreB+"");
 					if ( scoreA+scoreB == 1 ) 
@@ -577,126 +589,195 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 					}
 				}
 			}
-		}
-		else if ( isSevenSet(tournamentInfoTennis) ) {
-			//当前局为抢七局, 比分一次加1分, 且councilA和councilB均为最高局分6,5,4,3,视competitionSystemSmall第一位而定, 得分后set+1, council清零, small清零
-			if ( "A".equals(scoreSide) ) {
-				//A得分
-				scoreA++;
-				if ( scoreA >= 7 && ( scoreA - scoreB >= 2 ) ) {
-					//本发球局结束, A抢7胜, set+1, council清零, small清零, 换发球
-					tournamentInfoTennis.setNewestCouncilA(0);
-					tournamentInfoTennis.setNewestCouncilB(0);
-					tournamentInfoTennis.setNewestSmallA("0");
-					tournamentInfoTennis.setNewestSmallB("0");
-					setA++;
-					tournamentInfoTennis.setNewestSetA(setA);
-					if ( setA == winSet ) {
-						//A赢过半数, 比赛结束, A获胜
-						tournamentInfoTennis.setStatus("已结束");
-						tournamentInfoTennis.setNextServe(null);
-						tournamentInfoTennis.setEndTime(new Date());
-						tournamentInfoTennis.setWinner("A");
-						tournamentInfoTennis.setWithdraw("B");
-						tournamentInfoTennis.setNextServe(null);
-					}
-				}
-				else{
-					tournamentInfoTennis.setNewestSmallA(scoreA+"");
-					if ( scoreA+scoreB == 1 ) 
-						tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
-					else if ( (scoreA+scoreB) >= 2 ) {
-						if ( (scoreA+scoreB-1)%2 == 0 ) 
-							tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
-					}
-					
-				}
-			}
-			else{
-				//B得分
-				scoreB++;
-				if ( scoreB >= 7 && ( scoreB - scoreA >= 2 ) ) {
-					//本发球局结束, B抢7胜, set+1, council清零, small清零
-					tournamentInfoTennis.setNewestCouncilA(0);
-					tournamentInfoTennis.setNewestCouncilB(0);
-					tournamentInfoTennis.setNewestSmallA("0");
-					tournamentInfoTennis.setNewestSmallB("0");
-					setB++;
-					tournamentInfoTennis.setNewestSetB(setB);
-					if ( setB == winSet ) {
-						//A赢过半数, 比赛结束, A获胜
-						tournamentInfoTennis.setStatus("已结束");
-						tournamentInfoTennis.setNextServe(null);
-						tournamentInfoTennis.setEndTime(new Date());
-						tournamentInfoTennis.setWinner("B");
-						tournamentInfoTennis.setWithdraw("A");
-						tournamentInfoTennis.setNextServe(null);
-					}
-				}
-				else{
-					tournamentInfoTennis.setNewestSmallB(scoreB+"");
-					if ( scoreA+scoreB == 1 ) 
-						tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
-					else if ( (scoreA+scoreB) >= 2 ) {
-						if ( (scoreA+scoreB-1)%2 == 0 ) 
-							tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
-					}
-				}
-			}
-			
 		}
 		else{
-			//非抢7盘
-			if ( "A".equals(scoreSide) ) {
-				//A得分
-				switch (scoreA) {
-					case 0:
-						tournamentInfoTennis.setNewestSmallA("15");
-						break;
-					case 15:
-						tournamentInfoTennis.setNewestSmallA("30");
-						break;
-					case 30:
-						tournamentInfoTennis.setNewestSmallA("40");
-						break;
-					case 40: {
-						if ( "平分无占先".equals(competitionSystemSmall) ) {
-							//本局结束, small清零, councilA+1
-							tournamentInfoTennis.setNewestSmallA("0");
-							tournamentInfoTennis.setNewestSmallB("0");
-							tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
-							councilA++;
-							if ( (councilA == winCouncil && councilB <= winCouncil - 2) || (councilA == winCouncil+1) ) {
-								tournamentInfoTennis.setNewestCouncilA(0);
-								tournamentInfoTennis.setNewestCouncilB(0);
-								setA++;
-								tournamentInfoTennis.setNewestSetA(setA);
-								if ( setA == winSet ) {
-									//A赢过半数, 比赛结束, A获胜
-									tournamentInfoTennis.setStatus("已结束");
-									tournamentInfoTennis.setNextServe(null);
-									tournamentInfoTennis.setEndTime(new Date());
-									tournamentInfoTennis.setWinner("A");
-									tournamentInfoTennis.setWithdraw("B");
-									tournamentInfoTennis.setNextServe(null);
-								}
-							}
-							else{
-								tournamentInfoTennis.setNewestCouncilA(councilA);
-							}
+			if( isOnlySevenOr11Set(tournamentInfoTennis) > 0 ){
+				//1局抢7或1局抢11
+				int sevenOr11 = isOnlySevenOr11Set(tournamentInfoTennis);
+				//7,11
+				if ( "A".equals(scoreSide) ) {
+					//A得分
+					scoreA++;
+					if ( competitionSystemSmall.indexOf("有") >= 0 && scoreA >= sevenOr11 && ( scoreA - scoreB >= 2 )  ) {
+						//本发球局结束, A抢7胜, set+1, council清零, small清零, 换发球
+						tournamentInfoTennis.setNewestCouncilA(0);
+						tournamentInfoTennis.setNewestCouncilB(0);
+						tournamentInfoTennis.setNewestSmallA("0");
+						tournamentInfoTennis.setNewestSmallB("0");
+						setA++;
+						tournamentInfoTennis.setNewestSetA(setA);
+						if ( setA == winSet ) {
+							//A赢过半数, 比赛结束, A获胜
+							tournamentInfoTennis.setStatus("已结束");
+							tournamentInfoTennis.setNextServe(null);
+							tournamentInfoTennis.setEndTime(new Date());
+							tournamentInfoTennis.setWinner("A");
+							tournamentInfoTennis.setWithdraw("B");
+							tournamentInfoTennis.setNextServe(null);
 						}
-						else{
-							//平分有占先
-							if ( scoreB == 60 ) {
-								//A40, B Ad, A得分
-								tournamentInfoTennis.setNewestSmallB("40");
-							}
-							else if ( scoreB == 40 ) {
-								//A40, B40, A得分
-								tournamentInfoTennis.setNewestSmallA("Ad");
-							}
-							else {
-								////A40, B<=30, A得分, 本局结束
+					}
+					else if ( competitionSystemSmall.indexOf("无") >= 0 && scoreA == sevenOr11 ) {
+						//本发球局结束, A抢7胜, set+1, council清零, small清零, 换发球
+						tournamentInfoTennis.setNewestCouncilA(0);
+						tournamentInfoTennis.setNewestCouncilB(0);
+						tournamentInfoTennis.setNewestSmallA("0");
+						tournamentInfoTennis.setNewestSmallB("0");
+						setA++;
+						tournamentInfoTennis.setNewestSetA(setA);
+						if ( setA == winSet ) {
+							//A赢过半数, 比赛结束, A获胜
+							tournamentInfoTennis.setStatus("已结束");
+							tournamentInfoTennis.setNextServe(null);
+							tournamentInfoTennis.setEndTime(new Date());
+							tournamentInfoTennis.setWinner("A");
+							tournamentInfoTennis.setWithdraw("B");
+							tournamentInfoTennis.setNextServe(null);
+						}
+					}
+					else{
+						tournamentInfoTennis.setNewestSmallA(scoreA+"");
+						if ( scoreA+scoreB == 1 ) 
+							tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+						else if ( (scoreA+scoreB) >= 2 ) {
+							if ( (scoreA+scoreB-1)%2 == 0 ) 
+								tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+						}
+						
+					}
+				}
+				else{
+					//B得分
+					scoreB++;
+					if ( competitionSystemSmall.indexOf("有") >= 0 && scoreB >= sevenOr11 && ( scoreB - scoreA >= 2 ) ) {
+						//本发球局结束, B抢7胜, set+1, council清零, small清零
+						tournamentInfoTennis.setNewestCouncilA(0);
+						tournamentInfoTennis.setNewestCouncilB(0);
+						tournamentInfoTennis.setNewestSmallA("0");
+						tournamentInfoTennis.setNewestSmallB("0");
+						setB++;
+						tournamentInfoTennis.setNewestSetB(setB);
+						if ( setB == winSet ) {
+							//B赢过半数, 比赛结束, A获胜
+							tournamentInfoTennis.setStatus("已结束");
+							tournamentInfoTennis.setNextServe(null);
+							tournamentInfoTennis.setEndTime(new Date());
+							tournamentInfoTennis.setWinner("B");
+							tournamentInfoTennis.setWithdraw("A");
+							tournamentInfoTennis.setNextServe(null);
+						}
+					}
+					else if ( competitionSystemSmall.indexOf("无") >= 0 && scoreB == sevenOr11 ) {
+						//本发球局结束, B抢7胜, set+1, council清零, small清零, 换发球
+						tournamentInfoTennis.setNewestCouncilA(0);
+						tournamentInfoTennis.setNewestCouncilB(0);
+						tournamentInfoTennis.setNewestSmallA("0");
+						tournamentInfoTennis.setNewestSmallB("0");
+						setB++;
+						tournamentInfoTennis.setNewestSetB(setB);
+						if ( setB == winSet ) {
+							//B赢过半数, 比赛结束, A获胜
+							tournamentInfoTennis.setStatus("已结束");
+							tournamentInfoTennis.setNextServe(null);
+							tournamentInfoTennis.setEndTime(new Date());
+							tournamentInfoTennis.setWinner("B");
+							tournamentInfoTennis.setWithdraw("A");
+							tournamentInfoTennis.setNextServe(null);
+						}
+					}
+					else{
+						tournamentInfoTennis.setNewestSmallB(scoreB+"");
+						if ( scoreA+scoreB == 1 ) 
+							tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+						else if ( (scoreA+scoreB) >= 2 ) {
+							if ( (scoreA+scoreB-1)%2 == 0 ) 
+								tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+						}
+					}
+				}
+			}
+			else if ( isSevenSet(tournamentInfoTennis) ) {
+				//当前局为抢七局, 比分一次加1分, 且councilA和councilB均为最高局分6,5,4,3,视competitionSystemSmall第一位而定, 得分后set+1, council清零, small清零
+				if ( "A".equals(scoreSide) ) {
+					//A得分
+					scoreA++;
+					if ( scoreA >= 7 && ( scoreA - scoreB >= 2 ) ) {
+						//本发球局结束, A抢7胜, set+1, council清零, small清零, 换发球
+						tournamentInfoTennis.setNewestCouncilA(0);
+						tournamentInfoTennis.setNewestCouncilB(0);
+						tournamentInfoTennis.setNewestSmallA("0");
+						tournamentInfoTennis.setNewestSmallB("0");
+						setA++;
+						tournamentInfoTennis.setNewestSetA(setA);
+						if ( setA == winSet ) {
+							//A赢过半数, 比赛结束, A获胜
+							tournamentInfoTennis.setStatus("已结束");
+							tournamentInfoTennis.setNextServe(null);
+							tournamentInfoTennis.setEndTime(new Date());
+							tournamentInfoTennis.setWinner("A");
+							tournamentInfoTennis.setWithdraw("B");
+							tournamentInfoTennis.setNextServe(null);
+						}
+					}
+					else{
+						tournamentInfoTennis.setNewestSmallA(scoreA+"");
+						if ( scoreA+scoreB == 1 ) 
+							tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+						else if ( (scoreA+scoreB) >= 2 ) {
+							if ( (scoreA+scoreB-1)%2 == 0 ) 
+								tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+						}
+						
+					}
+				}
+				else{
+					//B得分
+					scoreB++;
+					if ( scoreB >= 7 && ( scoreB - scoreA >= 2 ) ) {
+						//本发球局结束, B抢7胜, set+1, council清零, small清零
+						tournamentInfoTennis.setNewestCouncilA(0);
+						tournamentInfoTennis.setNewestCouncilB(0);
+						tournamentInfoTennis.setNewestSmallA("0");
+						tournamentInfoTennis.setNewestSmallB("0");
+						setB++;
+						tournamentInfoTennis.setNewestSetB(setB);
+						if ( setB == winSet ) {
+							//A赢过半数, 比赛结束, A获胜
+							tournamentInfoTennis.setStatus("已结束");
+							tournamentInfoTennis.setNextServe(null);
+							tournamentInfoTennis.setEndTime(new Date());
+							tournamentInfoTennis.setWinner("B");
+							tournamentInfoTennis.setWithdraw("A");
+							tournamentInfoTennis.setNextServe(null);
+						}
+					}
+					else{
+						tournamentInfoTennis.setNewestSmallB(scoreB+"");
+						if ( scoreA+scoreB == 1 ) 
+							tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+						else if ( (scoreA+scoreB) >= 2 ) {
+							if ( (scoreA+scoreB-1)%2 == 0 ) 
+								tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+						}
+					}
+				}
+			}
+			else{
+				//非抢7盘
+				if ( "A".equals(scoreSide) ) {
+					//A得分
+					switch (scoreA) {
+						case 0:
+							tournamentInfoTennis.setNewestSmallA("15");
+							break;
+						case 15:
+							tournamentInfoTennis.setNewestSmallA("30");
+							break;
+						case 30:
+							tournamentInfoTennis.setNewestSmallA("40");
+							break;
+						case 40: {
+							if ( "平分无占先".equals(competitionSystemSmall) ) {
+								//本局结束, small清零, councilA+1
 								tournamentInfoTennis.setNewestSmallA("0");
 								tournamentInfoTennis.setNewestSmallB("0");
 								tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
@@ -720,89 +801,89 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 									tournamentInfoTennis.setNewestCouncilA(councilA);
 								}
 							}
-						}
-						break;
-					}
-					case 60:{
-						//A Ad A得分, 本局结束
-						tournamentInfoTennis.setNewestSmallA("0");
-						tournamentInfoTennis.setNewestSmallB("0");
-						tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
-						councilA++;
-						if ( (councilA == winCouncil && councilB <= winCouncil - 2) || (councilA == winCouncil+1) ) {
-							tournamentInfoTennis.setNewestCouncilA(0);
-							tournamentInfoTennis.setNewestCouncilB(0);
-							setA++;
-							tournamentInfoTennis.setNewestSetA(setA);
-							if ( setA == winSet ) {
-								//A赢过半数, 比赛结束, A获胜
-								tournamentInfoTennis.setStatus("已结束");
-								tournamentInfoTennis.setNextServe(null);
-								tournamentInfoTennis.setEndTime(new Date());
-								tournamentInfoTennis.setWinner("A");
-								tournamentInfoTennis.setWithdraw("B");
-								tournamentInfoTennis.setNextServe(null);
+							else{
+								//平分有占先
+								if ( scoreB == 60 ) {
+									//A40, B Ad, A得分
+									tournamentInfoTennis.setNewestSmallB("40");
+								}
+								else if ( scoreB == 40 ) {
+									//A40, B40, A得分
+									tournamentInfoTennis.setNewestSmallA("Ad");
+								}
+								else {
+									////A40, B<=30, A得分, 本局结束
+									tournamentInfoTennis.setNewestSmallA("0");
+									tournamentInfoTennis.setNewestSmallB("0");
+									tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+									councilA++;
+									if ( (councilA == winCouncil && councilB <= winCouncil - 2) || (councilA == winCouncil+1) ) {
+										tournamentInfoTennis.setNewestCouncilA(0);
+										tournamentInfoTennis.setNewestCouncilB(0);
+										setA++;
+										tournamentInfoTennis.setNewestSetA(setA);
+										if ( setA == winSet ) {
+											//A赢过半数, 比赛结束, A获胜
+											tournamentInfoTennis.setStatus("已结束");
+											tournamentInfoTennis.setNextServe(null);
+											tournamentInfoTennis.setEndTime(new Date());
+											tournamentInfoTennis.setWinner("A");
+											tournamentInfoTennis.setWithdraw("B");
+											tournamentInfoTennis.setNextServe(null);
+										}
+									}
+									else{
+										tournamentInfoTennis.setNewestCouncilA(councilA);
+									}
+								}
 							}
+							break;
 						}
-						else{
-							tournamentInfoTennis.setNewestCouncilA(councilA);
-						}
-						break;
-					}
-					default:
-						break;
-				}
-			}
-			else {
-				//B得分
-				switch (scoreB) {
-					case 0:
-						tournamentInfoTennis.setNewestSmallB("15");
-						break;
-					case 15:
-						tournamentInfoTennis.setNewestSmallB("30");
-						break;
-					case 30:
-						tournamentInfoTennis.setNewestSmallB("40");
-						break;
-					case 40: {
-						if ( "平分无占先".equals(competitionSystemSmall) ) {
-							//本局结束, small清零, councilB+1
+						case 60:{
+							//A Ad A得分, 本局结束
 							tournamentInfoTennis.setNewestSmallA("0");
 							tournamentInfoTennis.setNewestSmallB("0");
 							tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
-							councilB++;
-							if ( (councilB == winCouncil && councilA <= winCouncil - 2) || councilB == winCouncil + 1 ) {
+							councilA++;
+							if ( (councilA == winCouncil && councilB <= winCouncil - 2) || (councilA == winCouncil+1) ) {
 								tournamentInfoTennis.setNewestCouncilA(0);
 								tournamentInfoTennis.setNewestCouncilB(0);
-								setB++;
-								tournamentInfoTennis.setNewestSetB(setB);
-								if ( setB == winSet ) {
-									//B赢过半数, 比赛结束, B获胜
+								setA++;
+								tournamentInfoTennis.setNewestSetA(setA);
+								if ( setA == winSet ) {
+									//A赢过半数, 比赛结束, A获胜
 									tournamentInfoTennis.setStatus("已结束");
 									tournamentInfoTennis.setNextServe(null);
 									tournamentInfoTennis.setEndTime(new Date());
-									tournamentInfoTennis.setWinner("B");
-									tournamentInfoTennis.setWithdraw("A");
+									tournamentInfoTennis.setWinner("A");
+									tournamentInfoTennis.setWithdraw("B");
 									tournamentInfoTennis.setNextServe(null);
 								}
 							}
 							else{
-								tournamentInfoTennis.setNewestCouncilB(councilB);
+								tournamentInfoTennis.setNewestCouncilA(councilA);
 							}
+							break;
 						}
-						else{
-							//平分有占先
-							if ( scoreA == 60 ) {
-								//B40, A Ad, B得分
-								tournamentInfoTennis.setNewestSmallA("40");
-							}
-							else if ( scoreA == 40 ) {
-								//B40, A40, B得分
-								tournamentInfoTennis.setNewestSmallB("Ad");
-							}
-							else {
-								////B40, A<=30, B得分, 本局结束
+						default:
+							break;
+					}
+				}
+				else {
+					//B得分
+					switch (scoreB) {
+						case 0:
+							tournamentInfoTennis.setNewestSmallB("15");
+							break;
+						case 15:
+							tournamentInfoTennis.setNewestSmallB("30");
+							break;
+						case 30:
+							tournamentInfoTennis.setNewestSmallB("40");
+							break;
+						case 40: {
+							if ( "平分无占先".equals(competitionSystemSmall) ) {
+								//本局结束, small清零, councilB+1
 								tournamentInfoTennis.setNewestSmallA("0");
 								tournamentInfoTennis.setNewestSmallB("0");
 								tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
@@ -826,37 +907,73 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 									tournamentInfoTennis.setNewestCouncilB(councilB);
 								}
 							}
-						}
-						break;
-					}
-					case 60:{
-						//B Ad B得分, 本局结束
-						tournamentInfoTennis.setNewestSmallA("0");
-						tournamentInfoTennis.setNewestSmallB("0");
-						tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
-						councilB++;
-						if ( (councilB == winCouncil && councilA <= winCouncil - 2) || councilB == winCouncil + 1 ) {
-							tournamentInfoTennis.setNewestCouncilA(0);
-							tournamentInfoTennis.setNewestCouncilB(0);
-							setB++;
-							tournamentInfoTennis.setNewestSetB(setB);
-							if ( setB == winSet ) {
-								//A赢过半数, 比赛结束, A获胜
-								tournamentInfoTennis.setStatus("已结束");
-								tournamentInfoTennis.setNextServe(null);
-								tournamentInfoTennis.setEndTime(new Date());
-								tournamentInfoTennis.setWinner("B");
-								tournamentInfoTennis.setWithdraw("A");
-								tournamentInfoTennis.setNextServe(null);
+							else{
+								//平分有占先
+								if ( scoreA == 60 ) {
+									//B40, A Ad, B得分
+									tournamentInfoTennis.setNewestSmallA("40");
+								}
+								else if ( scoreA == 40 ) {
+									//B40, A40, B得分
+									tournamentInfoTennis.setNewestSmallB("Ad");
+								}
+								else {
+									////B40, A<=30, B得分, 本局结束
+									tournamentInfoTennis.setNewestSmallA("0");
+									tournamentInfoTennis.setNewestSmallB("0");
+									tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+									councilB++;
+									if ( (councilB == winCouncil && councilA <= winCouncil - 2) || councilB == winCouncil + 1 ) {
+										tournamentInfoTennis.setNewestCouncilA(0);
+										tournamentInfoTennis.setNewestCouncilB(0);
+										setB++;
+										tournamentInfoTennis.setNewestSetB(setB);
+										if ( setB == winSet ) {
+											//B赢过半数, 比赛结束, B获胜
+											tournamentInfoTennis.setStatus("已结束");
+											tournamentInfoTennis.setNextServe(null);
+											tournamentInfoTennis.setEndTime(new Date());
+											tournamentInfoTennis.setWinner("B");
+											tournamentInfoTennis.setWithdraw("A");
+											tournamentInfoTennis.setNextServe(null);
+										}
+									}
+									else{
+										tournamentInfoTennis.setNewestCouncilB(councilB);
+									}
+								}
 							}
+							break;
 						}
-						else{
-							tournamentInfoTennis.setNewestCouncilB(councilB);
+						case 60:{
+							//B Ad B得分, 本局结束
+							tournamentInfoTennis.setNewestSmallA("0");
+							tournamentInfoTennis.setNewestSmallB("0");
+							tournamentInfoTennis.setNextServe("A".equals(nextServe)?"B":"A");
+							councilB++;
+							if ( (councilB == winCouncil && councilA <= winCouncil - 2) || councilB == winCouncil + 1 ) {
+								tournamentInfoTennis.setNewestCouncilA(0);
+								tournamentInfoTennis.setNewestCouncilB(0);
+								setB++;
+								tournamentInfoTennis.setNewestSetB(setB);
+								if ( setB == winSet ) {
+									//A赢过半数, 比赛结束, A获胜
+									tournamentInfoTennis.setStatus("已结束");
+									tournamentInfoTennis.setNextServe(null);
+									tournamentInfoTennis.setEndTime(new Date());
+									tournamentInfoTennis.setWinner("B");
+									tournamentInfoTennis.setWithdraw("A");
+									tournamentInfoTennis.setNextServe(null);
+								}
+							}
+							else{
+								tournamentInfoTennis.setNewestCouncilB(councilB);
+							}
+							break;
 						}
-						break;
+						default:
+							break;
 					}
-					default:
-						break;
 				}
 			}
 		}
@@ -869,7 +986,7 @@ public class ScoreControlServiceImpl implements ScoreControlService {
 //			String noNextServe = "A".equals(nextServe)?"B":"A";
 			scoreA = "Ad".equals(tournamentInfoTennis.getNewestSmallA())?60:Integer.parseInt(tournamentInfoTennis.getNewestSmallA());
 			scoreB = "Ad".equals(tournamentInfoTennis.getNewestSmallB())?60:Integer.parseInt(tournamentInfoTennis.getNewestSmallB());
-			if ( "平分有占先".equals(small) ) 
+			if ( isFinal10Set(tournamentInfoTennis) || "平分有占先".equals(small) ) 
 				point = getPointForMultiSet(tournamentInfoTennis, scoreA, scoreB, nextServe, council, Integer.parseInt(game.substring(0,1))/2);
 			else if ( "平分无占先".equals(small) ) 
 				point = getPointForMultiSetNoAD(tournamentInfoTennis, scoreA, scoreB, nextServe, council, Integer.parseInt(game.substring(0,1))/2);

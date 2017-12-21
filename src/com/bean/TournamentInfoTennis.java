@@ -12,6 +12,7 @@ public class TournamentInfoTennis {
 	private String competitionSystemGame;
 	private String competitionSystemCouncil;
 	private String competitionSystemSmall;
+	private String competitionSystemLast;
 	private String home_1_name;
 	private String home_2_name;
 	private String away_1_name;
@@ -303,5 +304,11 @@ public class TournamentInfoTennis {
 	}
 	public void setPointType(String pointType) {
 		this.pointType = pointType;
+	}
+	public String getCompetitionSystemLast() {
+		return competitionSystemLast;
+	}
+	public void setCompetitionSystemLast(String competitionSystemLast) {
+		this.competitionSystemLast = competitionSystemLast;
 	}
 }

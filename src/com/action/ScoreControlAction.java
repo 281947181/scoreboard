@@ -102,13 +102,14 @@ public class ScoreControlAction extends ActionSupport {
 		String winType = ((String[])actionContext.getParameters().get("winType"))[0];
 		String setType = ((String[])actionContext.getParameters().get("setType"))[0];
 		String gameType = ((String[])actionContext.getParameters().get("gameType"))[0];
+		String lastType = ((String[])actionContext.getParameters().get("lastType"))[0];
 		String nameA1 = ((String[])actionContext.getParameters().get("nameA1"))[0];
 		String nameA2 = ((String[])actionContext.getParameters().get("nameA2"))[0];
 		String nameB1 = ((String[])actionContext.getParameters().get("nameB1"))[0];
 		String nameB2 = ((String[])actionContext.getParameters().get("nameB2"))[0];
 		new JsonUtils().writeJson(scoreControlService.doCreateTennisMatch(
 				matchName,city,location,judge,matchType,winType,
-				setType,gameType,nameA1,nameA2,nameB1,nameB2,matchDate));
+				setType,gameType,nameA1,nameA2,nameB1,nameB2,matchDate,lastType));
 	}
 	public void startTennisMatch(){
 		ActionContext actionContext = ActionContext.getContext();

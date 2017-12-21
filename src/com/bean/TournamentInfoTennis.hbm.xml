@@ -15,6 +15,7 @@
 		<property name="competitionSystemGame"></property>
 		<property name="competitionSystemCouncil"></property>
 		<property name="competitionSystemSmall"></property>
+		<property name="competitionSystemLast"></property>
 		<property name="home_1_name"></property>
 		<property name="home_2_name"></property>
 		<property name="away_1_name"></property>
